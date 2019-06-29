@@ -23,19 +23,22 @@
         <img class="img_user" v-bind:src="img_psd">
         <input class="text_user" type="password" placeholder="请输入密码" v-model="loginInfo.password" @focus="password" >
         <img class="img_down" v-bind:src="img_down_2">
-        <p class="psd_err">账号或密码错误</p>
+        <p class="psd_err" v-if="tip">账号或密码错误</p>
       </div> 
       <!-- 点击  -->
-      <div id="login_button" v-on:click="login" class="login" >
-        <p class="foot">{{name}}</p>
+      <div class="login_div" >
+              <button id="login_button" v-on:click="login" class="login" v-bind:style="styleButton" >{{name}}</button>
       </div>
-      <p class="p_last">忘记密码请联系管理员</p>
+      <p class="p_last" >忘记密码请联系管理员</p>
+    
+
     </div>
 
   </div>
 </template>
 
 <script>
+import { truncate } from 'fs';
 export default {
   name: 'login',
 
@@ -50,7 +53,12 @@ export default {
       img_psd:'http://www.pmdaniu.com/storage/97148/a6051345419001bae7af7d003a835144-57026/images/登录页面/u15.png',
       img_down_1:'http://www.pmdaniu.com/storage/97148/a6051345419001bae7af7d003a835144-57026/images/登录页面/u9.png',
       img_down_2:'http://www.pmdaniu.com/storage/97148/a6051345419001bae7af7d003a835144-57026/images/登录页面/u9.png',
-      loginInfo:{username:'',password:''}
+      loginInfo:{username:'',password:''},
+      styleButton: {
+        background:'rgba(145, 55, 243, 1)'
+      },
+      tip:false
+
     }
   },
   methods:{
@@ -67,11 +75,18 @@ export default {
       this.img_down_1="http://www.pmdaniu.com/storage/97148/a6051345419001bae7af7d003a835144-57026/images/登录页面/u9.png"
     },
     login(){
+      this.styleButton.background="";
       this.$axios
-      .post('/login',{username:this.loginInfo.username,password:this.loginInfo.password})
-      .then(data => {
-        var result = JSON.stringify(data);
-        console.log(result)
+      .post('http://localhost:8089/login',{username:this.loginInfo.username,password:this.loginInfo.password})
+      .then(result=> {
+        var res = JSON.stringify(result.data);
+        console.log(res)
+        if(result.data.code===200){
+          this.$router.push('/index')
+        }else{
+          this.tip=true
+        }
+        
       })
     }
   }
@@ -123,15 +138,20 @@ export default {
 .login{
   width: 220px;
   height: 40px;
-  background-color: rgba(145, 55, 243, 1);
-  text-align: center;
   margin: 40px auto 0;
   border-radius:40px;
+  border: 0;
+  color: white;
+  outline: none;
+}
+
+.login_div{
+ text-align: center;
 }
 .foot{
   margin: 0;
   line-height: 40px;
-  color: white;
+
   }
   .p_last{
     text-align: center;
