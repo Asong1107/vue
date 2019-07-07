@@ -8,6 +8,9 @@ import qs from 'qs'
 import Button from "ant-design-vue/lib/button";
 import './plugins/ant-design-vue.js'
 
+
+import './assets/iconfont/iconfont.js'
+
 Vue.config.productionTip = false
 // 全局注册，使用方法为 ；this.$axiosvue add ant-design
 Vue.prototype.$axios = axios
